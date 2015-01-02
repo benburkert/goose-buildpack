@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+if [[ "$(cat $3/GOPATH)" != "/app/.gopath" ]] ; then
+  echo " !     GOPATH must be set to /app/.gopath." >&2
+  exit 1
+fi
+
+if [[ "$(cat $3/GOROOT)" != "/app/.goroot" ]] ; then
+  echo " !     GOROOT must be set to /app/.goroot." >&2
+  exit 1
+fi
+
+export GOPATH="$(dirname $GOROOT)/gopath"
+mkdir -p $GOPATH
+
+echo -n "-----> Installing goose..."
+go get bitbucket.org/liamstask/goose/cmd/goose
+
+cp -R $GOROOT $1/.goroot
+cp -R $GOPATH $1/.gopath
+
+ln -s /app/.goroot/bin/go $1/bin/go
